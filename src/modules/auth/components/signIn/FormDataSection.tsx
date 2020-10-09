@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 import TwitterIcon from "@material-ui/icons/Twitter";
 import { Typography, withStyles } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 
 import LoginForm from "./LoginForm";
+import RegisterModal from "./RegisterModal";
 
 interface FormDataSectionProps {
   loginSection: any;
@@ -15,6 +16,8 @@ const FormDataSection = ({
   loginSection,
   loginWrapper,
 }: FormDataSectionProps) => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+
   return (
     <div className={loginSection}>
       <LoginForm />
@@ -35,6 +38,7 @@ const FormDataSection = ({
           variant="contained"
           color="secondary"
           style={{ color: "#fff" }}
+          onClick={() => setIsModalOpen(true)}
         >
           Зареєструватися
         </Buttons>
@@ -42,6 +46,10 @@ const FormDataSection = ({
           Увійти
         </Buttons>
       </div>
+      <RegisterModal
+        isModalVisible={isModalOpen}
+        setIsModalVisible={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
@@ -49,7 +57,7 @@ const FormDataSection = ({
 const Buttons = withStyles({
   root: {
     borderRadius: 40,
-    marginBottom: 10,
+    marginBottom: 20,
     height: 40,
     fontSize: 15,
     fontWeight: 700,
@@ -59,7 +67,7 @@ const Buttons = withStyles({
 
 const JoinTypography = withStyles({
   root: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 10,
     fontWeight: 700,
   },

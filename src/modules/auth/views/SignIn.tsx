@@ -8,7 +8,7 @@ import TypographySection from "../components/signIn/TypographySection";
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     display: "flex",
-    height: "95%",
+    height: "92%",
   },
   typographySection: {
     position: "relative",
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
       zIndex: 2,
       "& li": {
         display: "flex",
-        marginBottom: 20,
+        marginBottom: 40,
       },
     },
   },
@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
       flexWrap: "wrap",
       margin: 0,
       padding: 0,
+      justifyContent: "center",
       "& li": {
         listStyle: "none",
         marginLeft: 15,

@@ -37,6 +37,8 @@ const TypographySection = ({
 const TypographyStyles = withStyles({
   root: {
     marginLeft: "20px",
+    fontSize: 20,
+    fontWeight: 800,
   },
 })(Typography);
 

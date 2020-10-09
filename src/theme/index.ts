@@ -6,6 +6,7 @@ const index = createMuiTheme({
       main: "rgb(113, 201, 248)",
       dark: "rgb(26, 145, 218)",
       light: "#fff",
+      contrastText: "rgb(101, 119, 134)",
     },
     secondary: {
       main: "rgb(29, 161, 242)",

@@ -1,10 +1,10 @@
 import React from "react";
-import SignIn from "./modules/auth/views/SignIn";
+import Err from "./Test";
 
 function App() {
   return (
     <div className="App">
-      <SignIn />
+      <Err />
     </div>
   );
 }

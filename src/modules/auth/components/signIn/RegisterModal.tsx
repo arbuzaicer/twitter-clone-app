@@ -6,6 +6,7 @@ import { withStyles } from "@material-ui/core/styles";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import React, { useState } from "react";
 import styled from "styled-components";
+import * as Yup from "yup";
 
 import StyledButton from "components/Button";
 import StyledInput from "components/Input";
@@ -18,6 +19,18 @@ interface RegisterModalProps {
   isModalVisible: boolean;
   setIsModalVisible: () => void;
 }
+
+const SignupSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+  lastName: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+  email: Yup.string().email("Invalid email").required("Required"),
+});
 
 const RegisterModal = ({
   isModalVisible,
@@ -85,6 +98,7 @@ const RegisterModal = ({
           </FormHeader>
           <Formik
             onSubmit={(values) => console.log(values)}
+            validationSchema={SignupSchema}
             initialValues={{
               userName,
               email,
@@ -93,86 +107,23 @@ const RegisterModal = ({
           >
             {({ errors, touched, isValidating }) => (
               <Form>
-                <StyledHeaderText variant="h5">
-                  Створіть свій профіль
-                </StyledHeaderText>
-                <div
-                  style={{
-                    marginTop: 25,
-                  }}
-                >
-                  <StyledInput
-                    label="Ім'я"
-                    value={userName}
-                    onChange={setNameHandler}
-                    shrink={true}
-                    isFullWidth={true}
-                  />
-                  <ChartCounter>
-                    {userName.length}/{MAX_NAME_LENGTH}
-                  </ChartCounter>
-                </div>
-                <div
-                  style={{
-                    marginTop: 50,
-                  }}
-                >
-                  {isEmailFieldSelected ? (
-                    <Field name="email">
-                      {({ field, form: { touched, errors }, meta }) => (
-                        <StyledInput
-                          label={"Ел. пошта"}
-                          shrink
-                          isFullWidth
-                          value={email}
-                          onChange={(e: any) => setEmail(e.target.value)}
-                        />
-                      )}
-                    </Field>
-                  ) : (
-                    <StyledInput
-                      label={"Телефон"}
-                      shrink
-                      isFullWidth
-                      value={userPhone}
-                      onChange={(e: any) =>
-                        !isNaN(e.target.value) && setUserPhone(e.target.value)
-                      }
-                    />
-                  )}
-
-                  <MailText
-                    onClick={() => setIsEmailFieldSelected((prev) => !prev)}
-                  >
-                    {isEmailFieldSelected
-                      ? "Використати номер тел."
-                      : "Використати ел. пошту"}
-                  </MailText>
-                </div>
-                <div
-                  style={{
-                    marginTop: 30,
-                    color: theme.colors.textGray,
-                    fontSize: 14,
-                  }}
-                >
-                  <StyledDateBirthText variant="h6">
-                    Дата народження
-                  </StyledDateBirthText>
-                  <p>
-                    Ці дані не будуть загальнодоступні. Підтвердьте свій вік,
-                    навіть якщо це профіль компанії, домашнього улюбленця чи ще
-                    щось.
-                  </p>
-                </div>
-                <SelectFormControl
-                  month={month}
-                  days={days}
-                  year={year}
-                  setDays={setDays}
-                  setMonth={setMonth}
-                  setYear={setYear}
-                />
+                {({ errors, touched }: any) => (
+                  <Form>
+                    <Field name="firstName" />
+                    {errors.firstName && touched.firstName ? (
+                      <div>{errors.firstName}</div>
+                    ) : null}
+                    <Field name="userPhone" />
+                    {errors.userPhone && touched.userPhone ? (
+                      <div>{errors.userPhone}</div>
+                    ) : null}
+                    <Field name="email" type="email" />
+                    {errors.email && touched.email ? (
+                      <div>{errors.email}</div>
+                    ) : null}
+                    <button type="submit">Submit</button>
+                  </Form>
+                )}
               </Form>
             )}
           </Formik>
@@ -245,5 +196,86 @@ const StyledDateBirthText = withStyles({
     color: "black",
   },
 })(Typography);
+
+{/*<StyledHeaderText variant="h5">*/}
+{/*  Створіть свій профіль*/}
+{/*</StyledHeaderText>*/}
+{/*<div*/}
+{/*  style={{*/}
+{/*    marginTop: 25,*/}
+{/*  }}*/}
+{/*>*/}
+{/*  <StyledInput*/}
+{/*    label="Ім'я"*/}
+{/*    value={userName}*/}
+{/*    onChange={setNameHandler}*/}
+{/*    shrink={true}*/}
+{/*    isFullWidth={true}*/}
+{/*  />*/}
+{/*  <ChartCounter>*/}
+{/*    {userName.length}/{MAX_NAME_LENGTH}*/}
+{/*  </ChartCounter>*/}
+{/*</div>*/}
+{/*<div*/}
+{/*  style={{*/}
+{/*    marginTop: 50,*/}
+{/*  }}*/}
+{/*>*/}
+{/*  {isEmailFieldSelected ? (*/}
+{/*    <Field name="email">*/}
+{/*      {({ field, form: { touched, errors }, meta }) => (*/}
+{/*        <StyledInput*/}
+{/*          label={"Ел. пошта"}*/}
+{/*          shrink*/}
+{/*          isFullWidth*/}
+{/*          value={email}*/}
+{/*          onChange={(e: any) => setEmail(e.target.value)}*/}
+{/*        />*/}
+{/*      )}*/}
+{/*    </Field>*/}
+{/*  ) : (*/}
+{/*    <StyledInput*/}
+{/*      label={"Телефон"}*/}
+{/*      shrink*/}
+{/*      isFullWidth*/}
+{/*      value={userPhone}*/}
+{/*      onChange={(e: any) =>*/}
+{/*        !isNaN(e.target.value) && setUserPhone(e.target.value)*/}
+{/*      }*/}
+{/*    />*/}
+{/*  )}*/}
+
+{/*  <MailText*/}
+{/*    onClick={() => setIsEmailFieldSelected((prev) => !prev)}*/}
+{/*  >*/}
+{/*    {isEmailFieldSelected*/}
+{/*      ? "Використати номер тел."*/}
+{/*      : "Використати ел. пошту"}*/}
+{/*  </MailText>*/}
+{/*</div>*/}
+{/*<div*/}
+{/*  style={{*/}
+{/*    marginTop: 30,*/}
+{/*    color: theme.colors.textGray,*/}
+{/*    fontSize: 14,*/}
+{/*  }}*/}
+{/*>*/}
+{/*  <StyledDateBirthText variant="h6">*/}
+{/*    Дата народження*/}
+{/*  </StyledDateBirthText>*/}
+{/*  <p>*/}
+{/*    Ці дані не будуть загальнодоступні. Підтвердьте свій вік,*/}
+{/*    навіть якщо це профіль компанії, домашнього улюбленця чи ще*/}
+{/*    щось.*/}
+{/*  </p>*/}
+{/*</div>*/}
+{/*<SelectFormControl*/}
+{/*  month={month}*/}
+{/*  days={days}*/}
+{/*  year={year}*/}
+{/*  setDays={setDays}*/}
+{/*  setMonth={setMonth}*/}
+{/*  setYear={setYear}*/}
+{/*/>*/}
 
 export default RegisterModal;

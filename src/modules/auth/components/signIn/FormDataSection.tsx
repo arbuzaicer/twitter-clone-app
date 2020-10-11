@@ -1,31 +1,21 @@
 import React, { useState } from "react";
-
 import TwitterIcon from "@material-ui/icons/Twitter";
 import { Typography, withStyles } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
+
+import StyledButton from "components/Button";
+import styled from "styled-components";
+import theme from "theme";
 
 import LoginForm from "./LoginForm";
 import RegisterModal from "./RegisterModal";
 
-interface FormDataSectionProps {
-  loginSection: any;
-  loginWrapper: any;
-}
-
-const FormDataSection = ({
-  loginSection,
-  loginWrapper,
-}: FormDataSectionProps) => {
+const FormDataSection = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
 
   return (
-    <div className={loginSection}>
-      <LoginForm />
-      <div className={loginWrapper}>
-        <TwitterIcon
-          color="secondary"
-          style={{ fontSize: 45, marginBottom: 20 }}
-        />
+    <Container>
+      <LoginWrapper>
+        <Icon style={{ fontSize: 45, marginBottom: 20 }} />
         <LoginTypography variant="h5">
           Дізнайтесь, що відбувається у світі просто зараз
         </LoginTypography>
@@ -33,37 +23,49 @@ const FormDataSection = ({
         <JoinTypography variant="h6">
           Приєднуйтеся до Твіттера вже сьогодні.
         </JoinTypography>
-        <Buttons
-          fullWidth
-          variant="contained"
-          color="secondary"
-          style={{ color: "#fff" }}
+        <StyledButton
           onClick={() => setIsModalOpen(true)}
-        >
-          Зареєструватися
-        </Buttons>
-        <Buttons fullWidth variant="outlined" color="secondary">
-          Увійти
-        </Buttons>
-      </div>
+          label="Зареєструватися"
+          isFullWidth={true}
+          bottom={20}
+          bgColor={theme.colors.darkBlue}
+        />
+        <StyledButton
+          onClick={() => setIsModalOpen(true)}
+          label="Увійти"
+          isFullWidth={true}
+          isOutlined={true}
+          labelColor={theme.colors.darkenBlue}
+          bgColor={theme.colors.white}
+        />
+      </LoginWrapper>
       <RegisterModal
         isModalVisible={isModalOpen}
         setIsModalVisible={() => setIsModalOpen(false)}
       />
-    </div>
+
+      <LoginForm />
+    </Container>
   );
 };
 
-const Buttons = withStyles({
-  root: {
-    borderRadius: 40,
-    marginBottom: 20,
-    height: 40,
-    fontSize: 15,
-    fontWeight: 700,
-    textTransform: "none",
-  },
-})(Button);
+const Container = styled.div`
+  height: 100%;
+  width: 50.4%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: -10px;
+`;
+
+const LoginWrapper = styled.div`
+  width: 380px;
+`;
+
+const Icon = styled(TwitterIcon)`
+  color: ${(props) => props.theme.colors.darkBlue};
+`;
 
 const JoinTypography = withStyles({
   root: {

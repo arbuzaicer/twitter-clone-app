@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { withStyles, Button } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
+import styled from "styled-components";
 
+import StyledButton from "components/Button";
 import theme from "theme";
+import StyledInput from "components/Input";
 
 const LoginForm = () => {
   const [isForgotPasswordShown, setIsForgotPasswordShown] = useState<boolean>(
@@ -13,33 +14,19 @@ const LoginForm = () => {
   const onBlurHandler = () => setIsForgotPasswordShown(false);
 
   return (
-    <div
-      className="login-form-section"
-      style={{
-        position: "fixed",
-        display: "flex",
-        alignItems: "center",
-        marginLeft: 120,
-        top: 20,
-      }}
-    >
-      <form noValidate autoComplete="off" style={{ position: "relative" }}>
-        <StyledInput
-          id="filled-basic"
-          label="Тел., ел.пошта або ім'я"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
+    <Container className="login-form-section">
+      <HeaderForm
+        noValidate
+        autoComplete="off"
+        style={{ position: "relative" }}
+      >
+        <StyledInput label="Тел., ел.пошта або ім'я" shrink />
         <StyledInput
           label="Пароль"
           type="password"
-          id="password-input"
+          shrink={true}
           onFocus={onFocusHandler}
           onBlur={onBlurHandler}
-          InputLabelProps={{
-            shrink: true,
-          }}
         />
         <a
           className={`forgot-password ${
@@ -51,50 +38,29 @@ const LoginForm = () => {
         >
           Забули пароль?
         </a>
-      </form>
-      <StyledButton fullWidth variant="outlined" color="secondary">
-        Увійти
-      </StyledButton>
-    </div>
+      </HeaderForm>
+      <StyledButton
+        width={70}
+        label="Увійти"
+        isOutlined={true}
+        onClick={() => {}}
+        bgColor={theme.colors.white}
+        labelColor={theme.colors.darkenBlue}
+      />
+    </Container>
   );
 };
 
-const StyledButton = withStyles({
-  root: {
-    width: 70,
-    marginLeft: 20,
-    borderRadius: 20,
-    fontSize: 15,
-    padding: "5px 40px",
-    textTransform: "none",
-  },
-})(Button);
+const Container = styled.div`
+  position: fixed;
+  display: flex;
+  align-items: center;
+  margin-left: 120px;
+  top: 20px;
+`;
 
-const StyledInput = withStyles({
-  root: {
-    backgroundColor: "#f5f8fa",
-    marginLeft: 20,
-    width: 210,
-    "&:hover": {
-      backgroundColor: "#f5f8fa",
-    },
-    "& .MuiInput-underline:before": {
-      borderBottomColor: "black",
-      borderBottomWidth: 2,
-    },
-    "& label": {
-      padding: 10,
-      fontSize: 18,
-      width: "100%",
-    },
-    "& label.Mui-focused": {
-      color: theme.palette.primary.dark,
-    },
-    "& input": {
-      textIndent: 10,
-      fontSize: 20,
-    },
-  },
-})(TextField);
+const HeaderForm = styled.form`
+  position: relative;
+`;
 
 export default LoginForm;

@@ -1,66 +1,18 @@
-import React, { SyntheticEvent, useState } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
+import { Typography } from "@material-ui/core";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import Modal from "@material-ui/core/Modal";
+import { withStyles } from "@material-ui/core/styles";
 import TwitterIcon from "@material-ui/icons/Twitter";
-import Button from "@material-ui/core/Button";
-import theme from "theme";
-import {
-  Typography,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@material-ui/core";
+import React, { useState } from "react";
+import styled from "styled-components";
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  wrapper: {
-    height: "67%",
-    width: 600,
-    borderRadius: 18,
-    backgroundColor: theme.palette.primary.light,
-    display: "flex",
-    flexDirection: "column",
-  },
-  headerPart: {
-    height: 50,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-  },
-  formPart: {
-    border: "2px solid red",
-    padding: "20px 30px",
-  },
-  counterPart: {
-    color: theme.palette.primary.contrastText,
-    fontSize: 14,
-    marginRight: 10,
-    margin: "10px 0",
-    float: "right",
-  },
-  mailText: {
-    fontSize: 14,
-    marginTop: 25,
-    color: theme.palette.primary.dark,
-    cursor: "pointer",
-    "&:hover": {
-      textDecoration: "underline",
-    },
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-}));
+import StyledButton from "components/Button";
+import StyledInput from "components/Input";
+import theme from "theme";
+
+import SelectFormControl from "./SelectFormControl";
+import { Formik, Form, Field } from "formik";
 
 interface RegisterModalProps {
   isModalVisible: boolean;
@@ -71,37 +23,43 @@ const RegisterModal = ({
   isModalVisible,
   setIsModalVisible,
 }: RegisterModalProps) => {
-  const classes = useStyles();
   const MAX_NAME_LENGTH = 50;
+
   const [userName, setUserName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [userPhone, setUserPhone] = useState<string>("");
   const [isEmailFieldSelected, setIsEmailFieldSelected] = useState<boolean>(
     false
   );
-  const MONTH_DATA = [
-    "Січень",
-    "Лютий",
-    "Береень",
-    "Квітень",
-    "Травень",
-    "Червень",
-    "Липень",
-    "Серпень",
-    "Вересень",
-    "Жовтень",
-    "Листопад",
-    "Грудень",
-  ];
 
+  const [month, setMonth] = useState<string>("");
+
+  const [days, setDays] = useState<string>("");
+
+  const [year, setYear] = useState<string>("");
+
+  // TODO: add to
   const setNameHandler = (e: any) => {
-    if (userName.length >= MAX_NAME_LENGTH) {
-      return;
+    const { value } = e.target;
+    setUserName(value.slice(0, MAX_NAME_LENGTH));
+  };
+
+  const onSubmit = (e: any) => {
+    console.log(month, days, year, userName);
+  };
+
+  const validateEmail = (value: string) => {
+    let error;
+    if (!value) {
+      error = "Required";
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+      error = "Invalid email address";
     }
-    setUserName(e.target.value);
+    return error;
   };
 
   return (
-    <Modal
-      className={classes.modal}
+    <ModalContainer
       open={isModalVisible}
       onClose={setIsModalVisible}
       closeAfterTransition
@@ -111,103 +69,167 @@ const RegisterModal = ({
       }}
     >
       <Fade in={isModalVisible}>
-        <div className={classes.wrapper}>
-          <div className={classes.headerPart}>
-            <TwitterIcon color="secondary" style={{ fontSize: 30 }} />
-            <NextButton variant="contained" color="primary">
-              Далі
-            </NextButton>
-          </div>
-          <div className={classes.formPart}>
-            <StyledHeaderText variant="h5">
-              Створіть свій профіль
-            </StyledHeaderText>
-            <div
-              style={{
-                marginTop: 25,
-              }}
-            >
-              <StyledInput
-                label="Ім'я"
-                value={userName}
-                onChange={setNameHandler}
-                InputLabelProps={{
-                  shrink: true,
-                }}
+        <Wrapper>
+          <FormHeader>
+            <TwitterIcon
+              style={{ fontSize: 30, color: theme.colors.darkBlue }}
+            />
+            <NextButtonWrapper>
+              <StyledButton
+                label="Далі"
+                width={50}
+                height={30}
+                onClick={onSubmit}
               />
-              <p className={classes.counterPart}>
-                {userName.length}/{MAX_NAME_LENGTH}
-              </p>
-            </div>
-            <div
-              style={{
-                marginTop: 50,
-              }}
-            >
-              <StyledInput
-                label={isEmailFieldSelected ? "Ел. пошта" : "Телефон"}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <p
-                className={classes.mailText}
-                onClick={() => setIsEmailFieldSelected((prev) => !prev)}
-              >
-                {isEmailFieldSelected
-                  ? "Використати номер тел."
-                  : "Використати ел. пошту"}
-              </p>
-            </div>
-            <div
-              style={{
-                marginTop: 30,
-                color: theme.palette.primary.contrastText,
-                fontSize: 14,
-              }}
-            >
-              <StyledDateBirthText variant="h6">
-                Дата народження
-              </StyledDateBirthText>
-              <p>
-                Ці дані не будуть загальнодоступні. Підтвердьте свій вік, навіть
-                якщо це профіль компанії, домашнього улюбленця чи ще щось.
-              </p>
-              <FormControl className={classes.formControl}>
-                <InputLabel shrink id="demo-simple-select-label">
-                  Місяць
-                </InputLabel>
-                <Select>
-                  {MONTH_DATA.map((month, index) => (
-                    <StyledSelectOption key={month} value={index}>
-                      {month}
-                    </StyledSelectOption>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-          </div>
-        </div>
+            </NextButtonWrapper>
+          </FormHeader>
+          <Formik
+            onSubmit={(values) => console.log(values)}
+            initialValues={{
+              userName,
+              email,
+              userPhone,
+            }}
+          >
+            {({ errors, touched, isValidating }) => (
+              <Form>
+                <StyledHeaderText variant="h5">
+                  Створіть свій профіль
+                </StyledHeaderText>
+                <div
+                  style={{
+                    marginTop: 25,
+                  }}
+                >
+                  <StyledInput
+                    label="Ім'я"
+                    value={userName}
+                    onChange={setNameHandler}
+                    shrink={true}
+                    isFullWidth={true}
+                  />
+                  <ChartCounter>
+                    {userName.length}/{MAX_NAME_LENGTH}
+                  </ChartCounter>
+                </div>
+                <div
+                  style={{
+                    marginTop: 50,
+                  }}
+                >
+                  {isEmailFieldSelected ? (
+                    <Field name="email">
+                      {({ field, form: { touched, errors }, meta }) => (
+                        <StyledInput
+                          label={"Ел. пошта"}
+                          shrink
+                          isFullWidth
+                          value={email}
+                          onChange={(e: any) => setEmail(e.target.value)}
+                        />
+                      )}
+                    </Field>
+                  ) : (
+                    <StyledInput
+                      label={"Телефон"}
+                      shrink
+                      isFullWidth
+                      value={userPhone}
+                      onChange={(e: any) =>
+                        !isNaN(e.target.value) && setUserPhone(e.target.value)
+                      }
+                    />
+                  )}
+
+                  <MailText
+                    onClick={() => setIsEmailFieldSelected((prev) => !prev)}
+                  >
+                    {isEmailFieldSelected
+                      ? "Використати номер тел."
+                      : "Використати ел. пошту"}
+                  </MailText>
+                </div>
+                <div
+                  style={{
+                    marginTop: 30,
+                    color: theme.colors.textGray,
+                    fontSize: 14,
+                  }}
+                >
+                  <StyledDateBirthText variant="h6">
+                    Дата народження
+                  </StyledDateBirthText>
+                  <p>
+                    Ці дані не будуть загальнодоступні. Підтвердьте свій вік,
+                    навіть якщо це профіль компанії, домашнього улюбленця чи ще
+                    щось.
+                  </p>
+                </div>
+                <SelectFormControl
+                  month={month}
+                  days={days}
+                  year={year}
+                  setDays={setDays}
+                  setMonth={setMonth}
+                  setYear={setYear}
+                />
+              </Form>
+            )}
+          </Formik>
+        </Wrapper>
       </Fade>
-    </Modal>
+    </ModalContainer>
   );
 };
 
-const NextButton = withStyles({
-  root: {
-    color: "#fff",
-    fontSize: 16,
-    textTransform: "none",
-    padding: "0px 15px",
-    borderRadius: 20,
-    position: "absolute",
-    right: 15,
-    top: 15,
-    "&:hover": {
-      backgroundColor: theme.palette.primary.main,
-    },
-  },
-})(Button);
+const ModalContainer = styled(Modal)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Wrapper = styled.div`
+  height: 67%;
+  width: 600px;
+  border-radius: 18px;
+  background-color: ${(props) => props.theme.colors.white};
+  display: flex;
+  flex-direction: column;
+`;
+
+const NextButtonWrapper = styled.div`
+  position: absolute;
+  right: 25px;
+`;
+
+const FormHeader = styled.div`
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+`;
+
+const FormBody = styled.div`
+  padding: 20px 30px;
+`;
+
+const ChartCounter = styled.p`
+  color: ${(props) => props.theme.colors.textGray};
+  font-size: 14px;
+  margin: 10px 0;
+  float: right;
+`;
+
+const MailText = styled.p`
+  font-size: 14px;
+  margin-top: 25px;
+  color: ${(props) => props.theme.colors.darkBlue};
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 
 const StyledHeaderText = withStyles({
   root: {
@@ -223,40 +245,5 @@ const StyledDateBirthText = withStyles({
     color: "black",
   },
 })(Typography);
-
-const StyledInput = withStyles({
-  root: {
-    backgroundColor: "#f5f8fa",
-    width: "100%",
-    "&:hover": {
-      backgroundColor: "#f5f8fa",
-    },
-    "& .MuiInput-underline:before": {
-      borderBottomColor: "black",
-      borderBottomWidth: 2,
-    },
-    "& label": {
-      padding: "5px 10px",
-      fontSize: 20,
-      width: "100%",
-    },
-    "& label.Mui-focused": {
-      color: theme.palette.primary.dark,
-    },
-    "& input": {
-      textIndent: 10,
-      fontSize: 20,
-    },
-  },
-})(TextField);
-
-const StyledSelectOption = withStyles({
-  root: {
-    "&:hover": {
-      backgroundColor: theme.palette.primary.dark,
-      color: "white",
-    },
-  },
-})(MenuItem);
 
 export default RegisterModal;

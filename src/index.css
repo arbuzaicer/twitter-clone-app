@@ -23,7 +23,7 @@ code {
   font-size: 12px;
   position: absolute;
   bottom: -20px;
-  right: 0;
+  right: 20px;
   color: #64a2e2;
   transition: 0.3s;
 }
